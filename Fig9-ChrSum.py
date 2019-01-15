@@ -176,5 +176,4 @@ ax2.text(
     )
 ax2.set_title("Distribution of proportion of dmCpGs in chromosomes")
 plt.subplots_adjust(hspace=0.3)
-#plt.tight_layout()
 plt.show()
