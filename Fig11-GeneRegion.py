@@ -14,9 +14,9 @@ def autolabel(bar):
     for a in bar:
         height = a.get_height()
         ax.text(
-                a.get_x()+a.get_width()/2, height+0.5,
-                '{}'.format(height), ha='center', va='bottom'
-                )
+            a.get_x()+a.get_width()/2, height+0.5,
+            '{}'.format(height), ha='center', va='bottom'
+        )
 
 gr_hyper = gr.loc['Hypermethylated']['Count']
 gr_hypo = gr.loc['Hypomethylated']['Count']
