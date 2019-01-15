@@ -1,33 +1,26 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 31 16:59:43 2018
-
-@author: u0105352
-"""
-#%%
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 import matplotlib.pyplot as plt 
 from matplotlib_venn import venn2 
-#%%
-sig_hyper = pd.read_excel(r'C:\Users\u0105352\Desktop\Lingxiao\MOVEAGE2015\Partek\Noob_1_drpT\4-p01_S_vs_N\sumdata\cg_S_up.xlsx',
+
+sig_hyper = pd.read_excel(r'\sumdata\cg_S_up.xlsx',
                          usecols="B:F", names=["CHR", "CpG Region", "Gene Region", "Gene"],
                          index_col="Probeset ID"
                          )
 
-sig_hypo = pd.read_excel(r'C:\Users\u0105352\Desktop\Lingxiao\MOVEAGE2015\Partek\Noob_1_drpT\4-p01_S_vs_N\sumdata\cg_S_down.xlsx',
+sig_hypo = pd.read_excel(r'\sumdata\cg_S_down.xlsx',
                          usecols="B:F", names=["CHR", "CpG Region", "Gene Region", "Gene"],
                          index_col="Probeset ID"
                          )
-#%%
-all_path = r'C:\Users\u0105352\Desktop\Lingxiao\MOVEAGE2015\Initial_RawData\BC_corrected_methylation_beta\Sar_vs_N_Sar_ttest.csv'
+
+all_path = r'\BC_corrected_methylation_beta\Sar_vs_N_Sar_ttest.csv'
 all = pd.read_csv(
     all_path, 
     usecols=['Probe', 'Gene_name', 'Gene_region', 'T_value'],
     index_col='Probe'
     )
 all.rename(columns={'Gene_region':'Gene Region', 'Gene_name':'Gene'}, inplace=True)
-#%%
+
 all = all.dropna(axis=0, subset=['Gene Region'])
 all_hyper = all[
     ['Gene', 'Gene Region']
