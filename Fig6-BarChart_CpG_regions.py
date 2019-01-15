@@ -1,23 +1,19 @@
-#%%
 import pandas as pd
 import matplotlib.pyplot as plt
 
-##pd.category.value_counts
-
-ir = pd.read_csv('C:/Users/u0105352/Desktop/Lingxiao/MOVEAGE2015/Initial_RawData/\
-BC_corrected_methylation_beta/beta_noob_1_drpT_island_dis.csv')
-sig_ir = pd.read_csv('C:/Users/u0105352/Desktop/Lingxiao/MOVEAGE2015/Partek/Noob_1_drpT/\
-4-p01_S_vs_N/sumdata/p01_S_vs_N_S_isl_dis.csv')
+ir = pd.read_csv(r'\BC_corrected_methylation_beta\beta_noob_1_drpT_island_dis.csv')
+sig_ir = pd.read_csv(r'\4-p01_S_vs_N\sumdata/p01_S_vs_N_S_isl_dis.csv')
 
 df_ir = ir.merge(sig_ir, on='Island_region', how='outer')
 
 head = ("Region", "Total CpG sites", "dmCpG sites")
 df_ir.columns = head
 
-#%%
-### Draw a broken axis plot
-### The idea is to set two subplots and hide the spines between them
-### Set two subplots
+#====================================================================================
+# Draw a broken axis plot
+# The idea is to set two subplots and hide the spines between them
+# Set two subplots
+#====================================================================================
 ##fig, ax = plt.subplots(2, 1, sharex=True)
 ##df_ir.plot(kind='bar', ax=ax[0])
 ##df_ir.plot(kind='bar', ax=ax[1])
@@ -82,8 +78,9 @@ df_ir.columns = head
 ##fig.subplots_adjust(hspace=0.05)
 ##plt.show()
 
-#%%
+#====================================================================================
 # Draw a logarithmic scaled plot
+#====================================================================================
 fig, ax = plt.subplots()
 df_ir.plot(kind='bar', ax=ax, log=True)
 ax.set_xticklabels(df_ir['Region'].values, rotation='horizontal')
