@@ -1,21 +1,14 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Nov 23 11:11:53 2018
-
-@author: u0105352
-"""
-
-#%%
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy.stats as sp
 
-path1 = r'C:\Users\u0105352\Desktop\Lingxiao\MOVEAGE2015\Initial_RawData\BC_corrected_methylation_beta\beta_noob_1_drpT_trp.csv'
-path2 = r'C:\Users\u0105352\Desktop\Lingxiao\MOVEAGE2015\Initial_RawData\BC_corrected_methylation_beta\beta_noob_1_drpT_gene_annotation.csv'
-path3 = r'C:\Users\u0105352\Desktop\Lingxiao\MOVEAGE2015\Initial_RawData\Noob_1_drpT_beta_all_mrg_p01.xlsx'
-path4 = r'C:\Users\u0105352\Desktop\Lingxiao\MOVEAGE2015\Partek\Noob_1_drpT\4-p01_S_vs_N\sumdata\p01_S_vs_N_S.csv'
+# Data preprocessing
+path1 = r'\BC_corrected_methylation_beta\beta_noob_1_drpT_trp.csv'
+path2 = r'\BC_corrected_methylation_beta\beta_noob_1_drpT_gene_annotation.csv'
+path3 = r'\Initial_RawData\Noob_1_drpT_beta_all_mrg_p01.xlsx'
+path4 = r'\sumdata\p01_S_vs_N_S.csv'
 
 raw_data = pd.read_csv(path1)
 
@@ -23,27 +16,27 @@ all_gr = pd.read_csv(path2, usecols = ['ID', 'UCSC_RefGene_Group'])
 
 status =pd.read_excel(
         path3, sheet_name = 'p01_S_vs_N_S_merged', usecols = 'A,C'
-        )
+)
 
 sig_gr = pd.read_csv(path4, usecols = ['Probeset ID', 'UCSC_RefGene_Group'])
-#%%
+
 all_gr.rename(
     columns = {'ID': 'Probe', 'UCSC_RefGene_Group': 'Gene_region'},
     inplace = True
-    )
+)
 
 all_gr.dropna(axis = 0, subset = ['Gene_region'], inplace = True)
 
 sig_gr.rename(
     columns = {'Probeset ID': 'Probe', 'UCSC_RefGene_Group': 'Gene_region'},
     inplace = True
-    )
+)
 
 sig_gr.dropna(axis = 0, subset = ['Gene_region'], inplace = True)
 
 raw_data.set_index('ID', inplace = True)
 status.set_index('Column ID', inplace = True)
-#%%
+
 gr_list = ["TSS1500", "TSS200", "5'UTR", "1stExon", "Body", "3'UTR"]
 gr_all_dict = {}
 gr_sig_dict = {}
@@ -91,18 +84,10 @@ for region in gr_list:
     
     sum_avg = sum_avg.append(all_avg)
     sum_avg = sum_avg.append(sig_avg)
-#%% 
+
 status_sum = pd.merge(beta_avg, status, left_index = True, right_index = True)
 status_sum_avg = pd.merge(sum_avg, status, left_index = True, right_index = True)
-#%%
-writer = pd.ExcelWriter(
-    r'C:\Users\u0105352\Desktop\mean_beta_sum.xlsx',
-    engine = 'xlsxwriter'
-    )
-status_sum.to_excel(writer, sheet_name = 'average_beta')
-status_sum_avg.to_excel(writer, sheet_name = 'mrg_average_beta')
-writer.save()
-#%%
+
 # ttest function
 def ttest(ds1, ds2, p = 0.05):
     rlt_var, p_var = sp.levene(ds1, ds2)
@@ -135,8 +120,8 @@ for region in status_list:
     
     std_sum['sar_{}'.format(region)] = sar_value.std()
     std_sum['nsar_{}'.format(region)] = nsar_value.std()
-#%%
-# Detected CpG global beta value
+
+# Analysed CpG global beta value
 glb = pd.DataFrame()
 glb['value'] = raw_data.sum(axis=1) / len(raw_data.columns)
 glb_mrg = pd.merge(glb, status, left_index = True, right_index = True)
@@ -144,7 +129,7 @@ glb_mrg = pd.merge(glb, status, left_index = True, right_index = True)
 sar_value = glb_mrg['value'].loc[glb_mrg['STAT'] == 'Sar']
 
 nsar_value =  glb_mrg['value'].loc[glb_mrg['STAT'] == 'N_Sar']
-#%%
+
 # dmCpG global beta value
 sig_cpg = sig_gr['Probe'].values.tolist()
 
@@ -155,10 +140,13 @@ sig_glb_mrg = pd.merge(sig_glb, status, left_index = True, right_index = True)
 sar_value = sig_glb_mrg['value'].loc[sig_glb_mrg['STAT'] == 'Sar']
 
 nsar_value =  sig_glb_mrg['value'].loc[sig_glb_mrg['STAT'] == 'N_Sar']
-#%%
+
 status_sum_avg['Group'] = np.where(status_sum_avg['STAT']=='Sar', 'Sarcopenic', 'Non-sarcopenic')
-#%%
-# plot of 'All detected CpGs' 
+
+#===============================================================================
+# Plotting
+#===============================================================================
+# plot of 'All analysed CpGs' 
 fig, ax = plt.subplots()
 
 sns.barplot(
@@ -171,7 +159,7 @@ sns.barplot(
 ax.set_ylabel('Average β value')
 plt.title('Average β value of all detected CpGs in different gene regions')
 plt.show()
-#%%
+
 # plot of 'dmCpGs'
 fig, ax = plt.subplots()
 
