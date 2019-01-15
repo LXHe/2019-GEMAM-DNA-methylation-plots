@@ -1,51 +1,22 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep 25 10:03:02 2018
-
-@author: u0105352
-"""
-#%%
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-path1 = r'C:\Users\u0105352\Desktop\Lingxiao\PhD_file\2015-GEMAM-MoveAGE\Raw data\Elderly\DNA_methylation\Epigenetic_sample\methyspl_raw_phenotype.xlsx'
-path2 = r'C:\Users\u0105352\Desktop\Lingxiao\PhD_file\2015-GEMAM-MoveAGE\Raw data\Elderly\DNA_methylation\Epigenetic_sample\65-80_z_score.xlsx'
+path1 = r'\Epigenetic_sample\methyspl_raw_phenotype.xlsx'
+path2 = r'\Epigenetic_sample\65-80_z_score.xlsx'
 
 sample = pd.read_excel(path1,sheet_name='methyspl', usecols='A,B')
 total = pd.read_excel(path2)
-#%%
+
+# Data preparation
 methyl_sar_id = sample['ID'].loc[sample['STAT']=='Sar'].tolist()
 methyl_nonsar_id = sample['ID'].loc[sample['STAT']=='N_Sar'].tolist()
 tlt_sar_id = total.loc[total['STAT']=='Sar']
 tlt_nonsar_id = total.loc[total['STAT']=='N_Sar']
-#%%
+
 tlt_sar_id['selection'] = np.where(tlt_sar_id['ID'].isin(methyl_sar_id), 'Selected', 'Not-selected')
 tlt_nonsar_id['selection'] = np.where(tlt_nonsar_id['ID'].isin(methyl_nonsar_id), 'Selected', 'Not-selected')
-#%%
-# =============================================================================
-# This can't show proper legend
-# =============================================================================
-select_list = ['Selected', 'Not-selected']
-color_list = ['red', 'grey']
-color_map = dict(zip(select_list, color_list))
-#%%
-tlt_sar_id.sort_values(by=['z_sum'], inplace=True)
-tlt_sar_id.plot(y='z_sum', kind='bar', color=tlt_sar_id['selection'].map(color_map))
-plt.xticks([])
-plt.legend(loc='best')
-plt.show()
-#%%
-tlt_nonsar_id.sort_values(by=['z_sum'], inplace=True)
-tlt_nonsar_id.plot(y='z_sum', kind='bar', color=tlt_nonsar_id['selection'].map(color_map))
-plt.xticks([])
-plt.legend(loc='best')
-plt.show()
 
-#%%
-# =============================================================================
-# Use this method
-# =============================================================================
 sar_rank = np.linspace(1, 25, num=25, endpoint=True)
 nonsar_rank = np.linspace(1, 143, num=143, endpoint=True)
 
@@ -72,7 +43,8 @@ tlt_nonsar_smi['rank'] = nonsar_rank
 nonsar_sum = tlt_nonsar_sum.loc[tlt_nonsar_sum['selection']=='Selected'][['z_sum', 'rank']]
 nonsar_grip = tlt_nonsar_grip.loc[tlt_nonsar_grip['selection']=='Selected'][['z_grip', 'rank']]
 nonsar_smi = tlt_nonsar_smi.loc[tlt_nonsar_smi['selection']=='Selected'][['z_SMI', 'rank']]
-#%%
+
+# Plotting 
 fig = plt.figure()
 
 ax1 = fig.add_subplot(321)
