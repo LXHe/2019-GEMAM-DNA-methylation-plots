@@ -107,11 +107,11 @@ status_list.remove('STAT')
 for region in status_list:
     sar_value = status_sum[region].loc[
         status_sum['STAT'] == 'Sar'
-        ]
+    ]
 
     nsar_value = status_sum[region].loc[
         status_sum['STAT'] == 'N_Sar'
-        ]
+    ]
 
     p_sum[region] = ttest(sar_value, nsar_value)
     
@@ -152,9 +152,9 @@ fig, ax = plt.subplots()
 sns.barplot(
     x = 'Gene Region', y = 'average', hue = 'Group', data = status_sum_avg.loc[
         status_sum_avg['Type'] == 'All detected CpGs'    
-        ], 
+    ], 
     ci = 'sd', ax = ax
-    )
+)
 
 ax.set_ylabel('Average β value')
 plt.title('Average β value of all detected CpGs in different gene regions')
@@ -166,53 +166,42 @@ fig, ax = plt.subplots()
 sns.barplot(
     x = 'Gene Region', y = 'average', hue = 'Group', data = status_sum_avg.loc[
         status_sum_avg['Type'] == 'dmCpGs'    
-        ],
+    ],
     ci = 'sd', ax = ax    
-    )
+)
 
 # Error mark for TSS200
 plt.plot(
     [0.23, 0.30], [0.23, 0.23],
     color = 'k', linewidth = 2,
     transform = ax.transAxes
-    )
+)
 
 plt.text(0.265, 0.24,
     '*', ha = 'center', va = 'center', transform = ax.transAxes, fontsize = 17
-    )
+)
 
-## Error mark for 1stExon
-#plt.plot(
-#    [0.54, 0.61], [0.25, 0.25],
-#    color = 'k', linewidth = 2,
-#    transform = ax.transAxes
-#    )
-#
-#plt.text(0.575, 0.26,
-#    '*', ha = 'center', va = 'center', transform = ax.transAxes, fontsize = 17
-#    )
-
-# Error mark for Body
+# Error mark for Gene body
 plt.plot(
     [0.70, 0.77], [0.86, 0.86],
     color = 'k', linewidth = 2,
     transform = ax.transAxes
-    )
+)
 
 plt.text(0.735, 0.87,
     '*', ha = 'center', va = 'center', transform = ax.transAxes, fontsize = 17
-    )
+)
 
 # Error mark for 3'UTR
 plt.plot(
     [0.855, 0.925], [0.97, 0.97],
     color = 'k', linewidth = 2,
     transform = ax.transAxes
-    )
+)
 
 plt.text(0.887, 0.98,
     '*', ha = 'center', va = 'center', transform = ax.transAxes, fontsize = 17
-    )
+)
 
 ax.set_ylabel('Average β value')
 plt.title('Average β value of dmCpGs in different gene regions')
