@@ -1,48 +1,25 @@
-#%%
 import pandas as pd
 import scipy.stats as sp
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-all = pd.read_csv('C://Users/u0105352/Desktop/Lingxiao/MOVEAGE2015/Partek/Noob_1_drpT/\
-1-STAT_NOCOV/1-Descriptive/T_statistic_all_data.csv')
+path_glb = r'\Initial_RawData\Noob_1_drpT_beta_all_mrg_p01.xlsx'
 
-path = r'C:\Users\u0105352\Desktop\Lingxiao\MOVEAGE2015\Initial_RawData\Noob_1_drpT_beta_all_mrg_p01.xlsx'
-
+all = pd.read_csv(r'\1-Descriptive\T_statistic_all_data.csv')
 glb = pd.read_excel(
-    path,
+    path_glb,
     sheet_name='p01_S_vs_N_S_merged',
     usecols='C, CB, CE'
-    )
-#%%
+)
+
 # Test sample equal variances
+# 788074 is the total No. of analysed CpG sites
+# 6258 is the No. of dmCpG sites
 glb['a_avg'] = glb['ABS']/788074
 glb['s_avg'] = glb['SBS']/6258
 glb['Group'] = np.where(glb['STAT'].str.match('Sar'), 'Sarcopenic', 'Non-sarcopenic')
-#%%
-glb_a_sar = glb['a_avg'].loc[
-    glb['STAT'] == 'Sar'
-]
-glb_a_nsar = glb['a_avg'].loc[
-    glb['STAT'] == 'N_Sar'    
-]
-rlt_a_ev, p_a_ev = sp.levene(glb_a_sar, glb_a_nsar)
-# p value shows that the samples have equal variance
-# Welch's t-test
-rlt_a_tt, p_a_tt = sp.ttest_ind(glb_a_sar, glb_a_nsar, equal_var = True)
-#%%
-glb_s_sar = glb['s_avg'].loc[
-    glb['STAT'] == 'Sar'
-]
-glb_s_nsar = glb['s_avg'].loc[
-    glb['STAT'] == 'N_Sar'    
-]
-rlt_s_ev, p_s_ev = sp.levene(glb_s_sar, glb_s_nsar)
-# p value shows that the samples have equal variance
-# Welch's t-test
-rlt_s_tt, p_s_tt = sp.ttest_ind(glb_s_sar, glb_s_nsar, equal_var = True)
-#%%
+
 glb_1 = glb[['Group', 'a_avg']]
 glb_1['Type'] = 'Tested CpGs'
 glb_1.rename(columns={'a_avg': 'average'}, inplace = True)
@@ -50,11 +27,8 @@ glb_2 = glb[['Group', 's_avg']]
 glb_2['Type'] = 'dmCpGs'
 glb_2.rename(columns={'s_avg': 'average'}, inplace = True)
 glb_mrg = glb_1.append(glb_2)
-#%%
-data = all['T(N_Sar vs. Sar)'].values
-##print ('Max value is: {}'.format(data.max()))
-##print ('Min value is: {}'.format(data.min()))
 
+# Plot colored histogram
 fig, ax = plt.subplots(nrows=1, ncols=3)
 
 N, bins, patches = ax[0].hist(
@@ -86,11 +60,7 @@ ax[0].set_title(
 ax[0].set_xlabel("T value", fontsize=12)
 ax[0].set_ylabel("No. of CpG sites", fontsize=12)
 
-#glb.boxplot(
-#    column = ['avg'], by = ['STAT'], ax = ax[1], grid = False
-#    )
-#ax[1].set_xticklabels(['Non-sarcopenic', 'Sarcopenic'])
-
+# Boxplot
 sns.boxplot(
     x = 'Type', y = 'average', hue = 'Group', data = glb_mrg.loc[
         glb_mrg['Type'] == 'Tested CpGs'
